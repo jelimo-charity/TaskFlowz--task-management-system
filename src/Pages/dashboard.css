@@ -1,0 +1,15 @@
+.top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 50px;
+    align-items: center;
+    padding: 10px;
+    /* border: 1px solid blue; */
+
+}
+/* .topbar{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+} */
