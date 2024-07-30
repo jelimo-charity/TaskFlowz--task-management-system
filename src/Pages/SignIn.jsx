@@ -1,89 +1,83 @@
-import './signin.css'
-import { useNavigate } from 'react-router-dom'
-import signinImg from '../assets/signIn-img.png'
-import {useForm} from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import Navbar from '../components/Navbar'
-import { useContext } from 'react'
-import { Context } from '../context/userContext/Context'
-import Axios from 'axios'
-import Footer from '../Components/Footer'
+import { useNavigate } from 'react-router-dom';
+import signinImg from '../assets/signIn-img.png';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useContext } from 'react';
+import { Context } from '../context/userContext/Context';
+import Axios from 'axios';
+
 function SignIn() {
   const { user, dispatch } = useContext(Context);
   console.log(user);
+
   const schema = yup.object().shape({
     Email: yup.string().email().required("Email is required"),
     Password: yup.string().required("Password is required")
   });
 
-  const { register, handleSubmit, formState: { errors }} = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
-  
   });
-  // command to submit the form
+
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
     Axios.post('http://localhost:3000/auth/login', data)
-    .then( ({data}) => {
-      if(data.token){
-        dispatch({type: 'LOGIN_SUCCESSFUL', payload: data})
-          alert(" Login successful")
-          // console.log(data)
-        navigate('/dashboard')
-      }
-    })
-    .catch((response)=>{
-      alert(response);
-      
-      console.log(response);
-    })
-   
+      .then(({ data }) => {
+        if (data.token) {
+          dispatch({ type: 'LOGIN_SUCCESSFUL', payload: data });
+          alert("Login successful");
+          navigate('/dashboard');
+        }
+      })
+      .catch((response) => {
+        alert(response);
+        console.log(response);
+      });
   }
-  const navigate = useNavigate()
+
   return (
-    <div>
-      {/* <Navbar/> */}
-
-    <div className='signinContainer'>
-      <div className="col1">
-      <div className="col2">
-        <p id='head'>TaskFlowz!</p>
-        {/* <p>The ultimate task management solution designed to revolutionize the way you handle your tasks.
-          <br/> <span>Simplify and Streamline your task management with ease.</span>
-        </p> */}
-        <p>With TaskFlowz, you can effortlessly manage and prioritize your tasks,<br/> and stay on top of deadlines. Say goodbye to the chaos of scattered to-do
-           lists and embrace a streamlined<br/> workflow that empowers you to achieve more. <br/>
-           Experience the power of TaskFlowz and unlock your productivity potential today.</p>
-        <h4>Have No Account? <button onClick = {() => navigate('/signup')} >Sign Up</button> </h4>
-      </div>
-      </div>
-      
-      <div className="col3">
-        <div className="img">
-          <img id="signinImg" src={signinImg} alt="page-image" />
+    <div
+      className="hero flex justify-center items-center min-h-screen"
+      style={{
+        backgroundImage: "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+      }}>
+      <div className="hero-overlay bg-opacity-60"></div>
+      <div className="hero-content fle text-neutral-content text-center">
+        <div className=" flex flex-col  max-w-md">
+          <h1 className="mb-5  text-5xl font-bold">Login now!</h1>
+        
+          <div className="card bg-base-100 w-full max-w-sm mx-auto shadow-2xl">
+            <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Email</span>
+                </label>
+                <input type="email" placeholder="email" className="input input-bordered" {...register("Email")} required />
+                <p className="text-red-500">{errors.Email?.message}</p>
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Password</span>
+                </label>
+                <input type="password" placeholder="password" className="input input-bordered" {...register("Password")} required />
+                <label className="label">
+                  <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
+                </label>
+                <p className="text-red-500">{errors.Password?.message}</p>
+              </div>
+              <div className="form-control mt-6">
+                <button className="btn btn-primary">Login</button>
+              </div>
+            </form>
+          </div>
+          <h4 className="mt-5">Have No Account? <button onClick={() => navigate('/signup')} className="link link-hover text-primary">Sign Up</button></h4>
         </div>
-        <div className="frm">
-          <form onSubmit={ handleSubmit(onSubmit)}>
-            <h2>Sign In</h2>
-            <label htmlFor="email">Enter Email:</label>
-            <input type="email" { ...register("Email")}/>
-            <p>{errors.Email?.message}</p>
-            <label htmlFor="password">Enter Password:</label>
-            <input type="password" { ...register("Password")}/><br/>
-            <p>{errors.Password?.message}</p>
-            <input id='signinbtn' type="submit" />
-          </form>
-        </div>
       </div>
-      <div className="footer">
-        <Footer/>
-      </div>
+     
     </div>
-
-  </div>
-
-
-  )
+  );
 }
 
-export default SignIn
+export default SignIn;
